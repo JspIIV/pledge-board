@@ -36,10 +36,15 @@ const BROKEN_P = { commitment: 'We will launch a public token sale by Q3.', url:
 const out = [];
 const say = l => { console.log(l); out.push(l); };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const transient = e => /-32005|-32006|-32029|-32603|at capacity|rate limit|gas rate|reverted.*consensus|consensus.*reverted|backpressure|fetch failed|timeout|502|503|429|ECONNRESET/i
-  .test(String(e?.details || e?.shortMessage || e?.message || e));
+const transient = e => /-32005|-32006|-32029|-32603|at capacity|rate limit|gas rate|reverted.*consensus|consensus.*reverted|backpressure|fetch failed|timeout|502|503|429|ECONNRESET|ENOTFOUND|EAI_AGAIN|getaddrinfo/i
+  .test(String(e?.details || e?.shortMessage || e?.message || e) + " " + String(e?.cause?.cause?.code || e?.cause?.code || ""));
 
-const read = async (fn, args = []) => JSON.parse(await anybody.readContract({ address: AT, functionName: fn, args }));
+async function read(fn, args = []) {
+  for (let a = 1; ; a++) {
+    try { return JSON.parse(await anybody.readContract({ address: AT, functionName: fn, args })); }
+    catch (e) { if (!transient(e) || a >= 8) throw e; await sleep(4000 * a); }
+  }
+}
 async function write(who, fn, args) {
   for (let a = 1; ; a++) {
     try { return await who.client.writeContract({ address: AT, functionName: fn, args, value: 0n }); }

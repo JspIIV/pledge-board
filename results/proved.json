@@ -1,0 +1,124 @@
+{
+  "proved_at": "2026-09-21T18:30:17.009Z",
+  "network": "genlayer testnet asimov",
+  "contract": "0xbB6325Ff7A6Dfe776b6CA2784c85275386a5d94D",
+  "kept": {
+    "id": "3",
+    "author": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+    "made_at": "2026-09-21T18:06:52+00:00",
+    "commitment": "We will release v2.3.1 with the security fix.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/release-shipped.txt",
+    "due": 1700000000,
+    "status": "KEPT",
+    "checks": 1,
+    "reason": "The page states that version v2.3.1 has been released, fulfilling the promise.",
+    "quote": "Release v2.3.1 shipped 2026-09-20",
+    "judged_at": "2026-09-21T18:18:43+00:00"
+  },
+  "broken": {
+    "id": "4",
+    "author": "0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+    "made_at": "2026-09-21T18:07:13+00:00",
+    "commitment": "We will launch a public token sale by Q3.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/no-token-sale.txt",
+    "due": 1700000000,
+    "status": "BROKEN",
+    "checks": 1,
+    "reason": "The page explicitly states that no public token sale was launched in Q3, directly contradicting the promise to launch one by that deadline.",
+    "quote": "The Foundation has NOT launched a public token sale, in Q3 or at any other time, and has no token sale planned.",
+    "judged_at": "2026-09-21T18:29:28+00:00"
+  },
+  "early": {
+    "id": "5",
+    "author": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+    "made_at": "2026-09-21T18:08:22+00:00",
+    "commitment": "We will release v2.3.1 with the security fix.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/release-shipped.txt",
+    "due": 1790114009,
+    "status": "PENDING",
+    "checks": 0,
+    "reason": "",
+    "quote": "",
+    "judged_at": ""
+  },
+  "record": {
+    "padv": {
+      "exists": true,
+      "address": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+      "kept": 1,
+      "broken": 0
+    },
+    "ppub": {
+      "exists": true,
+      "address": "0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+      "kept": 0,
+      "broken": 1
+    }
+  },
+  "size": {
+    "total": 6,
+    "pending": 4,
+    "kept": 1,
+    "broken": 1
+  },
+  "checks": [
+    {
+      "label": "a kept promise is judged KEPT",
+      "ok": true
+    },
+    {
+      "label": "a broken promise is judged BROKEN",
+      "ok": true
+    },
+    {
+      "label": "the keeper's record shows the kept promise",
+      "ok": true
+    },
+    {
+      "label": "the breaker's record shows the broken promise",
+      "ok": true
+    },
+    {
+      "label": "a promise cannot be checked before its deadline, it stays pending",
+      "ok": true
+    },
+    {
+      "label": "the register counts one kept and one broken",
+      "ok": true
+    }
+  ],
+  "transcript": [
+    "Pledge, proven on GenLayer Asimov",
+    "  contract 0xbB6325Ff7A6Dfe776b6CA2784c85275386a5d94D",
+    "  padv 0x80519c53f10d731e4ff83a7d9acd69cf98da6258  ppub 0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+    "",
+    "padv pledged #3 (a promise its source shows kept)",
+    "ppub pledged #4 (a promise its source shows broken)",
+    "  (pledge transient, wait 8s)",
+    "padv pledged #5 (deadline in the future)",
+    "",
+    "checking #3...",
+    "  pledge0: not judged after poll, retrying",
+    "  pledge0: KEPT (30s)",
+    "  status KEPT | The page states that version v2.3.1 has been released, fulfilling the promise.",
+    "checking #4...",
+    "  pledge1: not judged after poll, retrying",
+    "  pledge1: BROKEN (30s)",
+    "  status BROKEN | The page explicitly states that no public token sale was launched in Q3, directly contradicting the promise to launch one by that deadline.",
+    "",
+    "trying to check #5 before its deadline...",
+    "  #5 status after early check: PENDING",
+    "",
+    "record(padv) = {\"exists\":true,\"address\":\"0x80519c53f10d731e4ff83a7d9acd69cf98da6258\",\"kept\":1,\"broken\":0} ; record(ppub) = {\"exists\":true,\"address\":\"0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c\",\"kept\":0,\"broken\":1}",
+    "register: {\"total\":6,\"pending\":4,\"kept\":1,\"broken\":1}",
+    "",
+    "  ok   a kept promise is judged KEPT",
+    "  ok   a broken promise is judged BROKEN",
+    "  ok   the keeper's record shows the kept promise",
+    "  ok   the breaker's record shows the broken promise",
+    "  ok   a promise cannot be checked before its deadline, it stays pending",
+    "  ok   the register counts one kept and one broken",
+    "",
+    "6 checks. The source judged the promise, and the record remembered."
+  ]
+}
