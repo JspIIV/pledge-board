@@ -1,0 +1,7 @@
+Organisations make dated promises, like shipping by a date or publishing an audit. The promise is loud, the day it comes due is quiet, so whether it was kept is left to whoever remembers to look.
+
+Pledge does the looking. pledge(commitment, source_url, due) records a promise in plain words, one public page where its truth will show, and a deadline; the author is bound to the caller. After the deadline, check(id), open to anybody, fetches that page itself and a GenLayer round decides KEPT, BROKEN or UNCLEAR. The verdict is permanent and accrues to the author, so record(address) builds a track record of promises met and missed, judged from sources not self-reported.
+
+It never judges early: check is refused until the deadline. An unreadable page is UNCLEAR, and the deciding evidence is the page the contract fetched.
+
+Proven on Asimov with a live board: a promise its source shows kept is KEPT; one its source shows broken is BROKEN; a promise still in its window cannot be checked yet.

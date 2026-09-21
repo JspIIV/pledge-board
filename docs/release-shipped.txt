@@ -1,0 +1,7 @@
+Project Orbit  Releases
+
+Release v2.3.1  shipped 2026-09-20
+
+Version v2.3.1 has been released and is available for download. It includes the
+security fix promised for this milestone. The release notes and binaries are
+published below.
