@@ -27,7 +27,7 @@ const padv = await acct('padv.json', PADV);
 const ppub = await acct('ppub.json', PPUB);
 const anybody = createClient({ chain: testnetAsimov });
 
-const RAW = 'https://raw.githubusercontent.com/JspIIV/pledge/master/docs/';
+const RAW = 'https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/';
 const PAST = '1700000000';
 const FUTURE = String(Math.floor(Date.now() / 1000) + 100000);
 const KEPT_P = { commitment: 'We will release v2.3.1 with the security fix.', url: RAW + 'release-shipped.txt' };

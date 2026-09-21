@@ -28,7 +28,7 @@ Whether a promise was kept is a judgement over real-world text that no ordinary 
 
 - **Contract (GenLayer Asimov):** `0xbB6325Ff7A6Dfe776b6CA2784c85275386a5d94D`
 - Explorer: https://explorer-asimov.genlayer.com/address/0xbB6325Ff7A6Dfe776b6CA2784c85275386a5d94D
-- **App:** https://jspiiv.github.io/pledge/ — reads the board from chain without a wallet; making and checking pledges are transactions on Asimov.
+- **App:** https://jspiiv.github.io/pledge-board/ — reads the board from chain without a wallet; making and checking pledges are transactions on Asimov.
 
 ## Proven on Asimov
 
