@@ -121,21 +121,43 @@ function walletFriendly(p){ return { ...p, request: async payload=>{
   try{ return await p.request({method:"eth_sendTransaction",params:[tx]}); }
   catch(err){ if(err?.code!==-32602||tx.gasPrice===undefined) throw err; const t={...tx}; delete t.gasPrice;
     return p.request({method:"eth_sendTransaction",params:[t]}); } } }; }
-async function useGenLayer(){ const cur=await window.ethereum.request({method:"eth_chainId"});
+// Pick MetaMask specifically. When several wallet extensions are installed they
+// fight over window.ethereum, and the request can silently go to the wrong one, so
+// MetaMask never pops up. eip6963 is the modern way to enumerate them; the
+// providers array and the single object are the fallbacks.
+const injected = [];
+try{ window.addEventListener("eip6963:announceProvider", ev=>{ if(ev?.detail?.provider) injected.push(ev.detail); });
+  window.dispatchEvent(new Event("eip6963:requestProvider")); }catch{}
+function pickProvider(){
+  const mm = injected.find(d=>/metamask/i.test(d.info?.rdns||"")||/metamask/i.test(d.info?.name||""));
+  if(mm) return mm.provider;
+  const e = window.ethereum;
+  if(!e) return null;
+  if(Array.isArray(e.providers)&&e.providers.length){ return e.providers.find(p=>p.isMetaMask) || e.providers[0]; }
+  return e;
+}
+function walletCount(){ if(injected.length) return injected.length; const e=window.ethereum; return Array.isArray(e?.providers)?e.providers.length:(e?1:0); }
+let eip1193=null;
+async function useGenLayer(){ const p=eip1193; const cur=await p.request({method:"eth_chainId"});
   if(String(cur).toLowerCase()===CHAIN_ID_HEX) return;
-  try{ await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID_HEX}]}); }
-  catch(err){ if(err&&(err.code===4902||err.code===-32603)){ await window.ethereum.request({method:"wallet_addEthereumChain",params:[CHAIN_PARAMS]}); return; } throw err; } }
-function client(){ return createClient({ chain: testnetAsimov, account, provider: walletFriendly(window.ethereum) }); }
+  try{ await p.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID_HEX}]}); }
+  catch(err){ if(err&&(err.code===4902||err.code===-32603)){ await p.request({method:"wallet_addEthereumChain",params:[CHAIN_PARAMS]}); return; } throw err; } }
+function client(){ return createClient({ chain: testnetAsimov, account, provider: walletFriendly(eip1193) }); }
 function wsay(msg){ const el=$("wstatus"); if(el) el.textContent=msg||""; }
 async function ensureWallet(){
-  if(!window.ethereum) throw new Error("No wallet found in this browser. Reading the board needs no wallet; to make or check a pledge, install MetaMask and open this page in that browser (a wallet does not inject into Claude's built-in browser).");
-  if(!account){ const a=await window.ethereum.request({method:"eth_requestAccounts"}); account=a&&a[0]; if(!account) throw new Error("No account was shared. Open MetaMask, unlock it, and connect this site."); $("connect").textContent=short(account); }
+  eip1193 = pickProvider();
+  if(!eip1193) throw new Error("No wallet found in this browser. Reading the board needs no wallet; to make or check a pledge, install MetaMask and open this page in that browser (a wallet does not inject into Claude's built-in browser).");
+  if(!account){ const a=await eip1193.request({method:"eth_requestAccounts"}); account=a&&a[0]; if(!account) throw new Error("No account was shared. Open MetaMask, unlock it, and connect this site."); $("connect").textContent=short(account); }
   await useGenLayer();
 }
 $("connect").onclick=async ()=>{
-  wsay("Opening your wallet… confirm the connection in MetaMask.");
-  try{ await ensureWallet(); wsay("Connected "+short(account)+" on GenLayer Asimov."); await loadBoard(); }
+  const n=walletCount();
+  wsay(n>1 ? "Opening MetaMask ("+n+" wallet extensions detected; if nothing appears, click the MetaMask icon in your toolbar)…"
+           : "Opening your wallet… confirm the connection in MetaMask.");
+  const hint=setTimeout(()=>wsay("Still waiting on the wallet. Click the MetaMask icon in your browser toolbar; a request may be waiting there. If you have more than one wallet extension, disable the others and reload."), 3500);
+  try{ await ensureWallet(); clearTimeout(hint); wsay("Connected "+short(account)+" on GenLayer Asimov."); await loadBoard(); }
   catch(e){
+    clearTimeout(hint);
     const code=e&&e.code;
     if(code===-32002) wsay("A connection request is already open. Click the MetaMask icon in your toolbar to approve it.");
     else if(code===4001) wsay("Connection rejected in the wallet. Click Connect wallet to try again.");
