@@ -1,0 +1,144 @@
+{
+  "proved_at": "2026-09-22T16:45:53.146Z",
+  "network": "genlayer testnet asimov",
+  "contract": "0x093E06AC4D16bB4D4f93e715CBcc6A55BD74Dda5",
+  "kept": {
+    "id": "0",
+    "author": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+    "made_at": "2026-09-22T16:21:57+00:00",
+    "commitment": "We will release v2.3.1 with the security fix.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/release-shipped.txt",
+    "due": 1790094175,
+    "due_iso": "2026-09-22 16:22 UTC",
+    "status": "KEPT",
+    "checks": 1,
+    "verdict": "KEPT",
+    "fulfilled_on": "2026-09-20",
+    "reason": "The release containing the security fix was published on 2026-09-20, which is two days before the deadline of 2026-09-22.",
+    "quote": "Release v2.3.1 shipped 2026-09-20",
+    "judged_at": "2026-09-22T16:43:15+00:00"
+  },
+  "broken": {
+    "id": "1",
+    "author": "0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+    "made_at": "2026-09-22T16:22:12+00:00",
+    "commitment": "We will launch a public token sale by Q3.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/no-token-sale.txt",
+    "due": 1790094175,
+    "due_iso": "2026-09-22 16:22 UTC",
+    "status": "BROKEN",
+    "checks": 1,
+    "verdict": "BROKEN",
+    "fulfilled_on": "",
+    "reason": "The page states that no public token sale was launched, so the promise was not fulfilled at all.",
+    "quote": "The Foundation has NOT launched a public token sale, in Q3 or at any other time, and has no token sale planned.",
+    "judged_at": "2026-09-22T16:44:42+00:00"
+  },
+  "early": {
+    "id": "2",
+    "author": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+    "made_at": "2026-09-22T16:22:26+00:00",
+    "commitment": "We will release v2.3.1 with the security fix.",
+    "source_url": "https://raw.githubusercontent.com/JspIIV/pledge-board/master/docs/release-shipped.txt",
+    "due": 1790194144,
+    "due_iso": "2026-09-23 20:09 UTC",
+    "status": "PENDING",
+    "checks": 0,
+    "verdict": "",
+    "fulfilled_on": "",
+    "reason": "",
+    "quote": "",
+    "judged_at": ""
+  },
+  "back_dated_refused": true,
+  "record": {
+    "padv": {
+      "exists": true,
+      "address": "0x80519c53f10d731e4ff83a7d9acd69cf98da6258",
+      "kept": 1,
+      "broken": 0
+    },
+    "ppub": {
+      "exists": true,
+      "address": "0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+      "kept": 0,
+      "broken": 1
+    }
+  },
+  "size": {
+    "total": 3,
+    "pending": 1,
+    "kept": 1,
+    "broken": 1
+  },
+  "checks": [
+    {
+      "label": "a promise fulfilled before its deadline is KEPT",
+      "ok": true
+    },
+    {
+      "label": "a promise never fulfilled is BROKEN",
+      "ok": true
+    },
+    {
+      "label": "the keeper's record shows the kept promise",
+      "ok": true
+    },
+    {
+      "label": "the breaker's record shows the broken promise",
+      "ok": true
+    },
+    {
+      "label": "a promise cannot be checked before its deadline, it stays pending",
+      "ok": true
+    },
+    {
+      "label": "a back-dated deadline is refused, the register does not grow",
+      "ok": true
+    },
+    {
+      "label": "the register counts one kept and one broken",
+      "ok": true
+    }
+  ],
+  "transcript": [
+    "Pledge, proven on GenLayer Asimov (deadline enforced)",
+    "  contract 0x093E06AC4D16bB4D4f93e715CBcc6A55BD74Dda5",
+    "  padv 0x80519c53f10d731e4ff83a7d9acd69cf98da6258  ppub 0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c",
+    "",
+    "trying to make a pledge with a deadline already in the past...",
+    "  (pledge transient, wait 8s)",
+    "  register size 0 -> 0 (a back-dated pledge is refused)",
+    "",
+    "padv pledged #0 (fulfilled before its deadline) due 1790094175",
+    "ppub pledged #1 (never fulfilled) due 1790094175",
+    "padv pledged #2 (deadline far in the future)",
+    "",
+    "trying to check #2 before its deadline...",
+    "  #2 status after early check: PENDING",
+    "",
+    "waiting 15s for the deadline to pass...",
+    "checking #0...",
+    "  (check transient, wait 8s)",
+    "  pledge0: not judged after poll, retrying",
+    "  pledge0: not judged after poll, retrying",
+    "  pledge0: KEPT v=KEPT (75s)",
+    "  status KEPT | verdict KEPT | The release containing the security fix was published on 2026-09-20, which is two days before the deadline of 2026-09-22.",
+    "checking #1...",
+    "  pledge1: BROKEN v=BROKEN (60s)",
+    "  status BROKEN | verdict BROKEN | The page states that no public token sale was launched, so the promise was not fulfilled at all.",
+    "",
+    "record(padv) = {\"exists\":true,\"address\":\"0x80519c53f10d731e4ff83a7d9acd69cf98da6258\",\"kept\":1,\"broken\":0} ; record(ppub) = {\"exists\":true,\"address\":\"0x0b57877ec84d96b672cd47d8ea4424283fdb9f6c\",\"kept\":0,\"broken\":1}",
+    "register: {\"total\":3,\"pending\":1,\"kept\":1,\"broken\":1}",
+    "",
+    "  ok   a promise fulfilled before its deadline is KEPT",
+    "  ok   a promise never fulfilled is BROKEN",
+    "  ok   the keeper's record shows the kept promise",
+    "  ok   the breaker's record shows the broken promise",
+    "  ok   a promise cannot be checked before its deadline, it stays pending",
+    "  ok   a back-dated deadline is refused, the register does not grow",
+    "  ok   the register counts one kept and one broken",
+    "",
+    "7 checks. The source judged the promise against its deadline, and the record remembered."
+  ]
+}
