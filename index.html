@@ -51,10 +51,12 @@
   </header>
 
   <h1>A public promise, checked against its own source when the time comes.</h1>
-  <p class="lead">Anyone can make a dated promise and name the page where its truth will show. After the
-    deadline, anyone can check it: the contract fetches that page and a round of GenLayer validators decides
-    whether it was <b>KEPT</b> or <b>BROKEN</b>. The verdict is permanent and it accrues to the author, so a
-    record of what someone actually delivered builds up next to what they said.</p>
+  <p class="lead">Anyone can make a dated promise, with a deadline in the future, and name the page where its
+    truth will show. After the deadline, anyone can check it: the contract fetches that page, tells the round
+    what the deadline was, and a round of GenLayer validators decides whether it was fulfilled on time
+    (<b>KEPT</b>) or not (<b>BROKEN</b>) — a promise fulfilled late does not count as kept. The verdict is
+    permanent and it accrues to the author, so a record of what someone actually delivered, and when, builds up
+    next to what they said.</p>
 
   <h2>Make a pledge</h2>
   <section>
@@ -86,7 +88,7 @@
 import { createClient } from "https://esm.sh/genlayer-js@1.1.8";
 import { testnetAsimov } from "https://esm.sh/genlayer-js@1.1.8/chains";
 
-const CONTRACT = "0xbB6325Ff7A6Dfe776b6CA2784c85275386a5d94D";
+const CONTRACT = "0x093E06AC4D16bB4D4f93e715CBcc6A55BD74Dda5";
 const CHAIN_ID_HEX = "0x107d";
 const CHAIN_PARAMS = { chainId: CHAIN_ID_HEX, chainName: "GenLayer Asimov",
   nativeCurrency:{name:"GEN",symbol:"GEN",decimals:18},
@@ -104,6 +106,7 @@ const fmtDate = ts => { try { return new Date(Number(ts)*1000).toISOString().sli
 const transient = e => /revert|-32005|-32006|-32603|at capacity|gas rate|rate limit|backpressure|fetch failed|timeout|502|503|429/i
   .test(String(e?.details||e?.shortMessage||e?.message||e));
 $("exp").href = EXPLORER + "/address/" + CONTRACT;
+try{ $("due").min = new Date(Date.now()+60000).toISOString().slice(0,16); }catch{}
 
 async function read(fn, args=[]) {
   for (let i=1;i<=4;i++){ try { const raw = await reader.readContract({address:CONTRACT,functionName:fn,args});
@@ -141,6 +144,7 @@ $("make").onclick = async () => {
     if(!/^https?:\/\//.test(url)){ $("pstatus").textContent="Give an http(s) source URL."; return; }
     if(!dueVal){ $("pstatus").textContent="Pick a deadline."; return; }
     const due = Math.floor(new Date(dueVal).getTime()/1000);
+    if(due <= Math.floor(Date.now()/1000)){ $("pstatus").textContent="The deadline must be in the future; a pledge cannot be back-dated."; return; }
     $("pstatus").textContent="Making the pledge… approve it in your wallet.";
     await sendWrite("pledge",[commitment,url,String(due)]);
     $("pstatus").textContent="Pledged. It can be checked after the deadline.";
@@ -188,7 +192,7 @@ async function loadBoard(){
       <div class="row">${badge(p.status)}<span class="head">${esc(p.commitment)}</span></div>
       <div class="meta">source: <a href="${esc(p.source_url)}" target="_blank" rel="noopener">${esc(p.source_url)}</a></div>
       <div class="meta">by ${esc((p.author||"").slice(0,10))}… <span class="rec">(record: ${esc(r.kept)} kept / ${esc(r.broken)} broken)</span> · due ${esc(fmtDate(due))} · #${esc(p.id)}</div>
-      ${p.reason?`<div class="why"><b>${esc(p.status)}</b> — ${esc(p.reason)}${p.quote?`<br><span class="muted">“${esc(p.quote)}”</span>`:""}</div>`:""}
+      ${p.reason?`<div class="why"><b>${esc(p.status)}${p.verdict==="LATE"?" (fulfilled late)":""}</b> — ${esc(p.reason)}${p.quote?`<br><span class="muted">“${esc(p.quote)}”</span>`:""}</div>`:""}
       ${canCheck?`<div class="actions"><button id="c-${esc(p.id)}" data-id="${esc(p.id)}" class="checkbtn primary">Check against its source</button></div>`:""}
       ${waiting?`<div class="muted">Checkable after the deadline.</div>`:""}
     </div>`; }).join("");
