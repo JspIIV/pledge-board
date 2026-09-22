@@ -49,6 +49,7 @@
       <button id="connect">Connect wallet</button>
     </div>
   </header>
+  <div id="wstatus" class="muted" style="margin-top:10px"></div>
 
   <h1>A public promise, checked against its own source when the time comes.</h1>
   <p class="lead">Anyone can make a dated promise, with a deadline in the future, and name the page where its
@@ -125,9 +126,22 @@ async function useGenLayer(){ const cur=await window.ethereum.request({method:"e
   try{ await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:CHAIN_ID_HEX}]}); }
   catch(err){ if(err&&(err.code===4902||err.code===-32603)){ await window.ethereum.request({method:"wallet_addEthereumChain",params:[CHAIN_PARAMS]}); return; } throw err; } }
 function client(){ return createClient({ chain: testnetAsimov, account, provider: walletFriendly(window.ethereum) }); }
-async function ensureWallet(){ if(!window.ethereum) throw new Error("No browser wallet found. Reading works without one; making and checking pledges need MetaMask on GenLayer Asimov.");
-  if(!account){ const a=await window.ethereum.request({method:"eth_requestAccounts"}); account=a[0]; $("connect").textContent=short(account); } await useGenLayer(); }
-$("connect").onclick=()=>ensureWallet().then(loadBoard).catch(e=>alert(e.message||e));
+function wsay(msg){ const el=$("wstatus"); if(el) el.textContent=msg||""; }
+async function ensureWallet(){
+  if(!window.ethereum) throw new Error("No wallet found in this browser. Reading the board needs no wallet; to make or check a pledge, install MetaMask and open this page in that browser (a wallet does not inject into Claude's built-in browser).");
+  if(!account){ const a=await window.ethereum.request({method:"eth_requestAccounts"}); account=a&&a[0]; if(!account) throw new Error("No account was shared. Open MetaMask, unlock it, and connect this site."); $("connect").textContent=short(account); }
+  await useGenLayer();
+}
+$("connect").onclick=async ()=>{
+  wsay("Opening your wallet… confirm the connection in MetaMask.");
+  try{ await ensureWallet(); wsay("Connected "+short(account)+" on GenLayer Asimov."); await loadBoard(); }
+  catch(e){
+    const code=e&&e.code;
+    if(code===-32002) wsay("A connection request is already open. Click the MetaMask icon in your toolbar to approve it.");
+    else if(code===4001) wsay("Connection rejected in the wallet. Click Connect wallet to try again.");
+    else wsay(e?.message||String(e));
+  }
+};
 
 async function sendWrite(fn, args){
   const c=client();
